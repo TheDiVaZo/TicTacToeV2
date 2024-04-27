@@ -69,7 +69,7 @@ public final class BigIntBoard implements Board {
         if (!positionEmpty(row, column))
             return false;
 
-        setPosition(row, column, getPlayer(playerSymbol));
+        setPosition(row, column, playerSymbol);
 
         movies.add(new Move(playerSymbol, row, column));
 
@@ -101,9 +101,10 @@ public final class BigIntBoard implements Board {
      *
      * @param row    The cell row.
      * @param column The cell column.
-     * @param value  The value to set the cell to.
+     * @param playerSymbol  The value to set the cell to.
      */
-    private void setPosition(int row, int column, int value) {
+    private void setPosition(int row, int column, PlayerSymbol playerSymbol) {
+        int value = getPlayer(playerSymbol);
         int pos = (row + (column * size)) * 2;
         long mask = 0b11L << pos;
         mask = ~mask;
@@ -118,7 +119,7 @@ public final class BigIntBoard implements Board {
     private int getPosition(int row, int column) {
         int pos = (row + (column * size)) * 2;
         long mask = 0b11L << pos;
-        return ((board.and(BigInteger.valueOf(mask))).shiftRight(pos)).intValue();
+        return (board.and(BigInteger.valueOf(mask)).shiftRight(pos)).intValue();
     }
 
     @Override
@@ -158,9 +159,19 @@ public final class BigIntBoard implements Board {
                         //Vertical check
                         predicate.test(i -> getCell(row, i)) ||
                         //Diagonal left check
-                        predicate.test(i -> getCell(Math.max(row - column, 0) + i, Math.max(column - row, 0) + i)) ||
+                        predicate.test(i ->{
+                            int x = Math.max(row - column, 0) + i;
+                            int y = Math.max(column - row, 0) + i;
+                            if (x >= size || y >= size) return null;
+                            return getCell(x, y);
+                        }) ||
                         //Diagonal right check
-                        predicate.test(i -> getCell(Math.max(row + column - size, 0) + i, Math.min(row + column, size) - i));
+                        predicate.test(i -> {
+                            int x = Math.min(row + column, size) - i;
+                            int y = Math.max(column + row - size+1, 0) + i;
+                            if (x >= size || y >= size || x < 0 || y < 0) return null;
+                            return getCell(x, y);
+                        });
 
     }
 

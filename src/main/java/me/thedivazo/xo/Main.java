@@ -22,7 +22,7 @@ public class Main {
             countForWin = 3;
         }
         System.out.println("Start game");
-        BoardFactory boardFactory = () -> size <= 4 ? new LongBoard(size, countForWin) : new ArrayBoard(size, countForWin);
+        BoardFactory boardFactory = () -> size <= 4 ? new LongBoard(size, countForWin) : new BigIntBoard(size, countForWin);
         BoardPrinter boardPrinter = new ConsoleBoardPrinter();
         Player one = new ConsoleHumanPlayer();
         Player two = new RandomAI();

@@ -14,18 +14,10 @@ public class ConsoleBoardPrinter implements BoardPrinter {
     );
 
     public void printBoard(BoardReadable boardReadable) {
-        String[][] board = new String[boardReadable.getSize()][boardReadable.getSize()];
-        for (int i = 0; i < boardReadable.getSize(); i++) {
-            for (int j = 0; j < boardReadable.getSize(); j++) {
-                board[i][j] = blankToken;
-            }
-        }
-        for (Move movie : boardReadable.getMovies()) {
-            board[movie.y()][movie.x()] = playerTokens.get(movie.playerSymbol());
-        }
-        for (String[] row : board) {
-            for (String cell : row) {
-                System.out.print(cell + "\t");
+        for (int y = 0; y < boardReadable.getSize(); y++) {
+            for (int x = 0; x < boardReadable.getSize(); x++) {
+                PlayerSymbol playerSymbol = boardReadable.getCell(x, y);
+                System.out.print((playerSymbol == null ? blankToken : playerTokens.get(playerSymbol)) + "\t");
             }
             System.out.println();
         }
